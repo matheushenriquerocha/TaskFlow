@@ -1,0 +1,27 @@
+{
+  "id": "./",
+  "name": "TaskFlow - Gerenciador de Tarefas",
+  "short_name": "TaskFlow",
+  "description": "Organize suas tarefas, acompanhe seus resultados e aumente sua produtividade.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F8FAFC",
+  "theme_color": "#1D4ED8",
+  "icons": [
+    {
+      "src": "./icons/taskflow-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/taskflow-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
