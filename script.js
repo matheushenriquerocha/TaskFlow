@@ -316,7 +316,8 @@ $("registerForm").addEventListener("submit", event => {
     const confirmar = $("registerConfirmPassword").value;
 
     if (!nome || !email || !senha) {
-        $("registerMessage").textContent = "Preencha todos os campos.";
+        $("registerMessage").textContent =
+            "Preencha todos os campos.";
         return;
     }
 
@@ -327,7 +328,8 @@ $("registerForm").addEventListener("submit", event => {
     }
 
     if (senha !== confirmar) {
-        $("registerMessage").textContent = "As senhas não coincidem.";
+        $("registerMessage").textContent =
+            "As senhas não coincidem.";
         return;
     }
 
@@ -351,23 +353,21 @@ $("registerForm").addEventListener("submit", event => {
     usuarios.push(novoUsuario);
     salvarUsuarios();
 
-    usuarioAtual = novoUsuario;
-    tarefas = [];
-    notificacoes = [];
-
-    configuracoes = {
-        darkMode: true,
-        notificacoes: true,
-        temaInicializado: true
-    };
-
-    salvarDadosUsuario();
-    salvarSessao();
+    // O cadastro não inicia uma sessão.
+    // O usuário precisa realizar o login manualmente.
 
     $("registerForm").reset();
 
+    $("registerBox").classList.add("hidden");
+    $("loginBox").classList.remove("hidden");
+
+    $("loginEmail").value = email;
+    $("loginPassword").value = "";
+
+    $("loginMessage").textContent =
+        "Conta criada com sucesso! Faça login para acessar o TaskFlow.";
+
     mostrarToast("Conta criada com sucesso!");
-    iniciarSistema();
 });
 
 $("loginForm").addEventListener("submit", event => {
@@ -381,7 +381,8 @@ $("loginForm").addEventListener("submit", event => {
     );
 
     if (!usuario || usuario.senha !== senha) {
-        $("loginMessage").textContent = "E-mail ou senha incorretos.";
+        $("loginMessage").textContent =
+            "E-mail ou senha incorretos.";
         return;
     }
 
