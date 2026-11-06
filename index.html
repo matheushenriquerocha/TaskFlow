@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%231D4ED8'/%3E%3Cpath d='M16 33l11 11 22-24' fill='none' stroke='%23ffffff' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="style.css?v=9">
+</head>
+
+<body>
+
+    <!-- TELA DE ABERTURA -->
+    <div id="splashScreen" class="splash-screen" role="status" aria-label="Iniciando o TaskFlow">
+        <div class="splash-content">
+            <div class="logo-icon splash-logo">✓</div>
+            <h1>TaskFlow</h1>
+            <p>Organize suas tarefas. Acompanhe seus resultados.</p>
+            <div class="splash-loader" aria-hidden="true"><span></span></div>
+            <small>Preparando sua plataforma...</small>
+        </div>
+    </div>
+
+    <!-- TELA DE LOGIN / CADASTRO -->
+    <div id="authScreen" class="auth-screen hidden">
+
+        <div id="loginBox" class="auth-box">
+            <div class="auth-logo">
+                <div class="logo-icon">✓</div>
+                <h1>TaskFlow</h1>
+                <p>Organize suas tarefas. Acompanhe seus resultados.</p>
+            </div>
+
+            <h2>Entrar</h2>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="loginEmail">E-mail</label>
+                    <input type="email" id="loginEmail" placeholder="Digite seu e-mail" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="loginPassword">Senha</label>
+                    <div class="password-container">
+                        <input type="password" id="loginPassword" placeholder="Digite sua senha" required>
+                        <button type="button" class="show-password" data-target="loginPassword">👁</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-button">Entrar</button>
+            </form>
+
+            <p id="loginMessage" class="auth-message"></p>
+
+            <div class="auth-footer">
+                <span>Ainda não possui uma conta?</span>
+                <button type="button" id="showRegister">Criar conta</button>
+            </div>
+        </div>
+
+        <!-- CADASTRO -->
+        <div id="registerBox" class="auth-box hidden">
+            <div class="auth-logo">
+                <div class="logo-icon">✓</div>
+                <h1>TaskFlow</h1>
+                <p>Crie sua conta e comece a organizar suas tarefas.</p>
+            </div>
+
+            <h2>Criar conta</h2>
+
+            <form id="registerForm">
+                <div class="input-group">
+                    <label for="registerName">Nome</label>
+                    <input type="text" id="registerName" placeholder="Digite seu nome" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="registerEmail">E-mail</label>
+                    <input type="email" id="registerEmail" placeholder="Digite seu e-mail" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="registerPassword">Senha</label>
+                    <div class="password-container">
+                        <input type="password" id="registerPassword" placeholder="Crie uma senha" minlength="4" required>
+                        <button type="button" class="show-password" data-target="registerPassword">👁</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="registerConfirmPassword">Confirmar senha</label>
+                    <div class="password-container">
+                        <input type="password" id="registerConfirmPassword" placeholder="Repita sua senha" minlength="4" required>
+                        <button type="button" class="show-password" data-target="registerConfirmPassword">👁</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-button">Criar conta</button>
+            </form>
+
+            <p id="registerMessage" class="auth-message"></p>
+
+            <div class="auth-footer">
+                <span>Já possui uma conta?</span>
+                <button type="button" id="showLogin">Voltar para login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SISTEMA PRINCIPAL -->
+    <div id="app" class="app hidden">
+
+        <!-- MENU LATERAL / NAVEGAÇÃO -->
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+                <div class="logo-icon">✓</div>
+                <div>
+                    <h2>TaskFlow</h2>
+                    <span>Gerenciador de tarefas</span>
+                </div>
+            </div>
+
+            <nav class="menu">
+                <button class="menu-item active" data-section="dashboard">
+                    <span class="menu-icon">⌂</span>
+                    Dashboard
+                </button>
+
+                <button class="menu-item" data-section="tasks">
+                    <span class="menu-icon">☷</span>
+                    Minhas Tarefas
+                </button>
+
+                <button class="menu-item" data-section="pending">
+                    <span class="menu-icon">◷</span>
+                    Pendentes
+                </button>
+
+                <button class="menu-item" data-section="completed">
+                    <span class="menu-icon">✓</span>
+                    Concluídas
+                </button>
+
+                <button class="menu-item" data-section="priorities">
+                    <span class="menu-icon">!</span>
+                    Prioridades
+                </button>
+
+                <button class="menu-item" data-section="calendar">
+                    <span class="menu-icon">□</span>
+                    Calendário
+                </button>
+
+                <button class="menu-item" data-section="statistics">
+                    <span class="menu-icon">▥</span>
+                    Estatísticas
+                </button>
+
+                <button class="menu-item" data-section="notifications">
+                    <span class="menu-icon">🔔</span>
+                    Notificações
+                    <span id="notificationBadge" class="notification-badge">0</span>
+                </button>
+
+                <button class="menu-item" data-section="settings">
+                    <span class="menu-icon">⚙</span>
+                    Configurações
+                </button>
+            </nav>
+
+            <!-- USUÁRIO LOGADO -->
+            <div class="sidebar-bottom">
+                <div class="logged-user">
+                    <div class="user-avatar" id="userAvatar">U</div>
+
+                    <div class="user-info">
+                        <strong id="sidebarUserName">Usuário</strong>
+                        <span id="sidebarUserEmail">usuario@email.com</span>
+                    </div>
+                </div>
+
+                <button id="logoutButton" class="logout-button">↪ Sair</button>
+            </div>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main">
+
+            <header class="topbar">
+                <div>
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">Visão geral das suas tarefas</p>
+                </div>
+            </header>
+
+            <!-- DASHBOARD -->
+            <section id="dashboardSection">
+
+                <div class="welcome-card">
+                    <div>
+                        <span class="welcome-label">BEM-VINDO AO TASKFLOW</span>
+                        <h2>Olá, <span id="dashboardUserName">Usuário</span>!</h2>
+                        <p>Organize suas atividades e acompanhe seu progresso.</p>
+                    </div>
+                </div>
+
+                <!-- INDICADORES -->
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <span>Total de tarefas</span>
+                        <strong id="totalTasks">0</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Pendentes</span>
+                        <strong id="pendingTasks">0</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Concluídas</span>
+                        <strong id="completedTasks">0</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Atrasadas</span>
+                        <strong id="overdueTasks">0</strong>
+                    </div>
+                </div>
+
+                <!-- RELATÓRIO RESUMIDO DE PRODUTIVIDADE -->
+                <div class="content-card dashboard-productivity">
+                    <div class="section-header dashboard-productivity-header">
+                        <div>
+                            <span class="welcome-label">SEU DESEMPENHO</span>
+                            <h2>Relatório de produtividade</h2>
+                            <p>Veja seu progresso e acompanhe suas entregas.</p>
+                        </div>
+
+                        <button id="openFullReport" type="button" class="secondary-button">
+                            Ver relatório completo
+                        </button>
+                    </div>
+
+                    <div class="productivity-layout">
+                        <div class="productivity-progress">
+                            <div class="progress-info dashboard-progress-info">
+                                <strong id="dashboardCompletionPercentage">0%</strong>
+                                <span>das tarefas concluídas</span>
+                            </div>
+
+                            <div class="progress-bar dashboard-progress-bar">
+                                <div id="dashboardProgressFill"></div>
+                            </div>
+
+                            <p id="dashboardProgressMessage" class="productivity-caption">
+                                Cadastre e conclua tarefas para acompanhar sua evolução.
+                            </p>
+                        </div>
+
+                        <div class="productivity-highlights">
+                            <div class="productivity-highlight">
+                                <span>Concluídas nos últimos 7 dias</span>
+                                <strong id="dashboardWeeklyCompleted">0</strong>
+                            </div>
+
+                            <div class="productivity-highlight">
+                                <span>Em andamento</span>
+                                <strong id="dashboardInProgress">0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-quick-actions">
+                        <div>
+                            <strong>Precisa organizar uma nova atividade?</strong>
+                            <p>Adicione uma tarefa sem sair do Dashboard.</p>
+                        </div>
+
+                        <button id="dashboardNewTaskButton" type="button" class="primary-button">
+                            + Cadastrar nova tarefa
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MINHAS TAREFAS -->
+            <section id="tasksSection" class="hidden">
+                <div class="content-card">
+                    <div class="section-header">
+                        <div>
+                            <h2>Todas as tarefas</h2>
+                            <p>Gerencie suas atividades.</p>
+                        </div>
+
+                        <button class="primary-button" id="newTaskButtonTasks">+ Nova tarefa</button>
+                    </div>
+
+                    <div class="filters task-list-filters">
+                        <select id="categoryFilter" aria-label="Filtrar tarefas por categoria">
+                            <option value="all">Todas as categorias</option>
+                            <option value="Estudos">Estudos</option>
+                            <option value="Trabalho">Trabalho</option>
+                            <option value="Pessoal">Pessoal</option>
+                            <option value="Projetos">Projetos</option>
+                            <option value="Outros">Outros</option>
+                            <option value="Sem categoria">Sem categoria</option>
+                        </select>
+                    </div>
+
+                    <div id="allTasksList" class="task-list"></div>
+                </div>
+            </section>
+
+            <!-- CALENDÁRIO -->
+            <section id="calendarSection" class="hidden">
+                <div class="content-card">
+                    <div class="calendar-header">
+                        <button id="previousMonth">‹</button>
+                        <h2 id="calendarMonth">Setembro 2026</h2>
+                        <button id="nextMonth">›</button>
+                    </div>
+
+                    <div class="calendar-weekdays">
+                        <span>Dom</span>
+                        <span>Seg</span>
+                        <span>Ter</span>
+                        <span>Qua</span>
+                        <span>Qui</span>
+                        <span>Sex</span>
+                        <span>Sáb</span>
+                    </div>
+
+                    <div id="calendarDays" class="calendar-days"></div>
+                </div>
+            </section>
+
+            <!-- ESTATÍSTICAS -->
+            <section id="statisticsSection" class="hidden">
+                <div class="statistics-grid">
+                    <div class="stat-card">
+                        <span>Total de tarefas</span>
+                        <strong id="statisticsTotal">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Concluídas</span>
+                        <strong id="statisticsCompleted">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Pendentes</span>
+                        <strong id="statisticsPending">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Atrasadas</span>
+                        <strong id="statisticsOverdue">0</strong>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h2>Progresso geral</h2>
+
+                    <div class="progress-info">
+                        <strong id="completionPercentage">0%</strong>
+                        <span>das tarefas concluídas</span>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div id="progressFill"></div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h2>Tarefas por prioridade</h2>
+
+                    <div class="priority-stat">
+                        <div class="priority-title">
+                            <span>Alta</span>
+                            <strong id="highPriorityCount">0</strong>
+                        </div>
+                        <div class="priority-bar">
+                            <div id="highPriorityBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="priority-stat">
+                        <div class="priority-title">
+                            <span>Média</span>
+                            <strong id="mediumPriorityCount">0</strong>
+                        </div>
+                        <div class="priority-bar">
+                            <div id="mediumPriorityBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="priority-stat">
+                        <div class="priority-title">
+                            <span>Baixa</span>
+                            <strong id="lowPriorityCount">0</strong>
+                        </div>
+                        <div class="priority-bar">
+                            <div id="lowPriorityBar"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NOTIFICAÇÕES -->
+            <section id="notificationsSection" class="hidden">
+                <div class="content-card">
+                    <div class="section-header">
+                        <div>
+                            <h2>Notificações</h2>
+                            <p>Acompanhe as atualizações das suas tarefas.</p>
+                        </div>
+
+                        <button id="markAllRead" class="secondary-button">
+                            Marcar todas como lidas
+                        </button>
+                    </div>
+
+                    <div id="notificationList"></div>
+                </div>
+            </section>
+
+            <!-- CONFIGURAÇÕES -->
+            <section id="settingsSection" class="hidden">
+
+                <!-- PERFIL -->
+                <div class="content-card">
+                    <div class="settings-card-header">
+                        <div>
+                            <h2>Perfil</h2>
+                            <p class="settings-description">
+                                Consulte e atualize as informações da sua conta.
+                            </p>
+                        </div>
+
+                        <button id="editProfile" type="button" class="secondary-button hidden">
+                            Editar informações
+                        </button>
+                    </div>
+
+                    <div class="settings-form">
+                        <div id="profileReveal" class="profile-reveal">
+                            <div>
+                                <strong>Informações protegidas</strong>
+                                <p>Confirme sua senha para visualizar seus dados completos.</p>
+                            </div>
+
+                            <div class="profile-reveal-controls">
+                                <input type="password" id="profileRevealPassword"
+                                    autocomplete="current-password" placeholder="Senha atual">
+
+                                <button id="revealProfile" type="button" class="primary-button">
+                                    Visualizar dados
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="settingsName">Nome</label>
+                            <input type="text" id="settingsName" readonly>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="settingsEmail">E-mail</label>
+                            <input type="email" id="settingsEmail" readonly>
+                        </div>
+
+                        <div id="profileConfirmation" class="input-group hidden">
+                            <label for="profileCurrentPassword">Senha atual (confirmação)</label>
+                            <input type="password" id="profileCurrentPassword"
+                                autocomplete="current-password" placeholder="Digite sua senha atual">
+
+                            <small class="field-help">
+                                Por segurança, confirme sua senha para salvar as alterações.
+                            </small>
+                        </div>
+
+                        <div id="profileActions" class="settings-actions hidden">
+                            <button id="saveProfile" type="button" class="primary-button">
+                                Salvar alterações
+                            </button>
+
+                            <button id="cancelProfile" type="button" class="secondary-button">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ALTERAR SENHA -->
+                <div class="content-card">
+                    <h2>Alterar senha</h2>
+
+                    <div class="settings-form">
+                        <div class="input-group">
+                            <label for="currentPassword">Senha atual</label>
+                            <input type="password" id="currentPassword" autocomplete="current-password">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="newPassword">Nova senha</label>
+                            <input type="password" id="newPassword" autocomplete="new-password">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="confirmPassword">Confirmar nova senha</label>
+                            <input type="password" id="confirmPassword">
+                        </div>
+
+                        <button id="savePassword" class="primary-button">
+                            Alterar senha
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PREFERÊNCIAS -->
+                <div class="content-card">
+                    <h2>Preferências</h2>
+
+                    <div class="setting-option">
+                        <div>
+                            <strong>Modo escuro</strong>
+                            <p>Alterar a aparência do sistema.</p>
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-option">
+                        <div>
+                            <strong>Notificações</strong>
+                            <p>Receber notificações sobre suas tarefas.</p>
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" id="notificationsToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- RESTAURAR CONFIGURAÇÕES -->
+                <div class="content-card danger-card">
+                    <h2>Restaurar configurações</h2>
+
+                    <p>
+                        Restaura as preferências do sistema para os valores padrão.
+                    </p>
+
+                    <button id="resetSettings" class="danger-button">
+                        Restaurar configurações
+                    </button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL DE TAREFA -->
+    <div id="taskModal" class="modal hidden">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div>
+                    <h2 id="modalTitle">Nova tarefa</h2>
+                    <p>Preencha as informações da tarefa.</p>
+                </div>
+
+                <button id="closeModal" class="close-button" type="button">×</button>
+            </div>
+
+            <form id="taskForm">
+                <input type="hidden" id="taskId">
+
+                <div class="input-group">
+                    <label for="taskTitle">Título</label>
+                    <input type="text" id="taskTitle" placeholder="Ex: Fazer trabalho" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="taskDescription">Descrição</label>
+                    <textarea id="taskDescription" placeholder="Descreva a tarefa..."></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="taskCategory">Categoria</label>
+                    <select id="taskCategory">
+                        <option value="Estudos">Estudos</option>
+                        <option value="Trabalho">Trabalho</option>
+                        <option value="Pessoal">Pessoal</option>
+                        <option value="Projetos">Projetos</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="taskDate">Data</label>
+                        <input type="date" id="taskDate" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="taskPriority">Prioridade</label>
+                        <select id="taskPriority">
+                            <option value="low">Baixa</option>
+                            <option value="medium" selected>Média</option>
+                            <option value="high">Alta</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancelModal" class="secondary-button">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="primary-button">
+                        Salvar tarefa
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script src="script.js?v=6"></script>
+
+</body>
+</html>
